@@ -1,0 +1,9 @@
+Tikslas: išmokti pasirinktais įrankiais suprojektuoti ir realizuoti duomenų bazę tam tikrai dalykinei sričiai.
+
+Užduotis: sukurti duomenų bazę pasirinktai ir su dėstytoju suderintai dalykinei sričiai:
+
+Sudaryti dalykinės srities esybių-ryšių modelį;
+Sudaryti duomenų bazės schemos projektą esybių-ryšių modelio pagrindu;
+Sugeneruoti DDL kodą iš duomenų bazės projekto;
+Duomenų bazių valdymo sistemoje sukurti duomenų bazę įvykdant DDL kodą;
+Užpildyti duomenų bazę įrašų pavyzdžiais.

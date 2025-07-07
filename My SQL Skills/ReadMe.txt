@@ -1,0 +1,2 @@
+Lab1 and Lab2 folders hold the project that was completed during Databases Course in my Uni. It was built on PHP framework and using phpMyAdmin for database administration. 
+Also I did some data analysis with SQL fior Covid related data.

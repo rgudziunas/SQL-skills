@@ -1,0 +1,168 @@
+#@(#) script.ddl
+
+DROP TABLE IF EXISTS Yra_vedami;
+DROP TABLE IF EXISTS Uzsiemimai;
+DROP TABLE IF EXISTS Uzsakymo_prekes;
+DROP TABLE IF EXISTS Sertifikatai;
+DROP TABLE IF EXISTS Atsiliepimai;
+DROP TABLE IF EXISTS Kursu_uzsakymai;
+DROP TABLE IF EXISTS Kursai;
+DROP TABLE IF EXISTS U_siemimo_vedimo_b_dai;
+DROP TABLE IF EXISTS Kalba;
+DROP TABLE IF EXISTS Kurso_vedejai;
+DROP TABLE IF EXISTS Klientai;
+DROP TABLE IF EXISTS Filialai;
+CREATE TABLE Filialai
+(
+	Miestas varchar (50) NOT NULL,
+	Adresas varchar (100) NOT NULL,
+	Tel__numeris varchar (50) NOT NULL,
+	El__pastas varchar (255) NOT NULL,
+	Vadovas varchar (50) NOT NULL,
+	id_Filialas integer NOT NULL,
+	PRIMARY KEY(id_Filialas)
+);
+
+CREATE TABLE Klientai
+(
+	Vardas varchar (50) NOT NULL,
+	Pavarde varchar (50) NOT NULL,
+	Miestas varchar (50) NOT NULL,
+	Am_ius integer NOT NULL,
+	El__pastas varchar (255) NOT NULL,
+	Tel__nr varchar (40) NOT NULL,
+	Kliento_kodas varchar (50) NOT NULL,
+	Vartotojo_vardas varchar (50) NOT NULL,
+	Slapta_odis varchar (255) NOT NULL,
+	Back_up_fraze varchar (255) NOT NULL,
+	id_Klientas integer NOT NULL,
+	PRIMARY KEY(id_Klientas)
+);
+
+CREATE TABLE Kurso_vedejai
+(
+	Vardas varchar (60) NOT NULL,
+	Pavarde varchar (60) NOT NULL,
+	Kurso_vedejo_kodas varchar (60) NOT NULL,
+	Kurso_vedejo_el__pastas varchar (255) NULL,
+	Issilavinimas varchar (100) NULL,
+	Patirtis varchar (100) NULL,
+	id_Kurso_vedejas integer NOT NULL,
+	PRIMARY KEY(id_Kurso_vedejas)
+);
+
+CREATE TABLE Kalba
+(
+	id_Kalba integer,
+	name char (8) NOT NULL,
+	PRIMARY KEY(id_Kalba)
+);
+INSERT INTO Kalba(id_Kalba, name) VALUES(1, 'Lietuviu');
+INSERT INTO Kalba(id_Kalba, name) VALUES(2, 'Anglu');
+INSERT INTO Kalba(id_Kalba, name) VALUES(3, 'Rusu');
+
+CREATE TABLE U_siemimo_vedimo_b_dai
+(
+	id_U_siemimo_vedimo_b_dai integer,
+	name char (26) NOT NULL,
+	PRIMARY KEY(id_U_siemimo_vedimo_b_dai)
+);
+INSERT INTO U_siemimo_vedimo_b_dai(id_U_siemimo_vedimo_b_dai, name) VALUES(1, 'U_siemimas_gyvai');
+INSERT INTO U_siemimo_vedimo_b_dai(id_U_siemimo_vedimo_b_dai, name) VALUES(2, 'U_siemimas_nuotoliniu_b_du');
+
+CREATE TABLE Kursai
+(
+	Pavadinimas varchar (40) NOT NULL,
+	Kurso_kodas varchar (40) NOT NULL,
+	Kurso_kaina double precision NOT NULL,
+	Ar_finansuojamas_UT boolean NOT NULL,
+	Aprasymas varchar (255) NOT NULL,
+	Kurso_lygmuo varchar (40) NULL,
+	Ar_reikalinga_programavimo_patirtis boolean NULL,
+	Naudojamos_technologijos varchar (150) NULL,
+	Reikalinga_programine__ranga varchar (150) NULL,
+	Kurso_reitingas double precision NULL,
+	Sertifikavimo_galimybe boolean NOT NULL,
+	Mokymu_trukm__val integer NOT NULL,
+	Kokia_kalba_vedamas_kursas integer NOT NULL,
+	id_Kursas integer NOT NULL,
+	fk_Filialasid_Filialas integer NOT NULL,
+	PRIMARY KEY(id_Kursas),
+	FOREIGN KEY(Kokia_kalba_vedamas_kursas) REFERENCES Kalba (id_Kalba),
+	CONSTRAINT Turi_parenges FOREIGN KEY(fk_Filialasid_Filialas) REFERENCES Filialai (id_Filialas)
+);
+
+CREATE TABLE Kursu_uzsakymai
+(
+	Sumoketa_suma double precision NOT NULL,
+	Mokejimo_data date NOT NULL,
+	Mokejimo_budas varchar (100) NOT NULL,
+	Ar_pilnai_ivykdytas_mokejimas boolean NOT NULL,
+	Uzsakymo_numeris varchar (150) NOT NULL,
+	id_Kursu_uzsakymas integer NOT NULL,
+	fk_Klientasid_Klientas integer NOT NULL,
+	PRIMARY KEY(id_Kursu_uzsakymas),
+	CONSTRAINT Užsako FOREIGN KEY(fk_Klientasid_Klientas) REFERENCES Klientai (id_Klientas)
+);
+
+CREATE TABLE Atsiliepimai
+(
+	Tekstas varchar (255) NOT NULL,
+	_vertinimas integer NOT NULL,
+	Data date NOT NULL,
+	id_Atsiliepimai integer NOT NULL,
+	fk_Kursasid_Kursas integer NOT NULL,
+	fk_Klientasid_Klientas integer NOT NULL,
+	PRIMARY KEY(id_Atsiliepimai),
+	CONSTRAINT Yra_gaves FOREIGN KEY(fk_Kursasid_Kursas) REFERENCES Kursai (id_Kursas),
+	CONSTRAINT Kuria FOREIGN KEY(fk_Klientasid_Klientas) REFERENCES Klientai (id_Klientas)
+);
+
+CREATE TABLE Sertifikatai
+(
+	Isdavimo_data date NOT NULL,
+	Islaikymo_pazymys double precision NOT NULL,
+	Galiojimo_pasibaigimo_data date NOT NULL,
+	id_Sertifikatai integer NOT NULL,
+	fk_Klientasid_Klientas integer NOT NULL,
+	fk_Kursasid_Kursas integer NOT NULL,
+	PRIMARY KEY(id_Sertifikatai),
+	CONSTRAINT Gavo FOREIGN KEY(fk_Klientasid_Klientas) REFERENCES Klientai (id_Klientas),
+	CONSTRAINT Išduoda FOREIGN KEY(fk_Kursasid_Kursas) REFERENCES Kursai (id_Kursas)
+);
+
+CREATE TABLE Uzsakymo_prekes
+(
+	Kiekis integer NOT NULL,
+	id_Uzsakymo_preke integer NOT NULL,
+	fk_Kursasid_Kursas integer NOT NULL,
+	fk_Kursu_uzsakymasid_Kursu_uzsakymas integer NOT NULL,
+	PRIMARY KEY(id_Uzsakymo_preke),
+	CONSTRAINT `Itraukta i` FOREIGN KEY(fk_Kursasid_Kursas) REFERENCES Kursai (id_Kursas),
+	CONSTRAINT `Sudarytas is_ko` FOREIGN KEY(fk_Kursu_uzsakymasid_Kursu_uzsakymas) REFERENCES Kursu_uzsakymai (id_Kursu_uzsakymas)
+
+);
+
+CREATE TABLE Uzsiemimai
+(
+	Trukme double precision NOT NULL,
+	Vietu_skaicius integer NOT NULL,
+	Kurso_laikas varchar (15) NOT NULL,
+	Uzsiemimo_budas integer NOT NULL,
+	id_Uzsiemimas integer NOT NULL,
+	fk_Kursasid_Kursas integer NOT NULL,
+	fk_Kurso_ved_jasid_Kurso_ved_jas integer NOT NULL,
+	PRIMARY KEY(id_Uzsiemimas),
+	FOREIGN KEY(Uzsiemimo_budas) REFERENCES U_siemimo_vedimo_b_dai (id_U_siemimo_vedimo_b_dai),
+	CONSTRAINT Turi FOREIGN KEY(fk_Kursasid_Kursas) REFERENCES Kursai (id_Kursas),
+	CONSTRAINT Veda FOREIGN KEY(fk_Kurso_ved_jasid_Kurso_ved_jas) REFERENCES Kurso_vedejai (id_Kurso_vedejas)
+);
+
+CREATE TABLE Yra_vedami
+(
+    fk_Kursasid_Kursas integer NOT NULL,
+    fk_Kurso_ved_jasid_Kurso_ved_jas integer NOT NULL,
+    PRIMARY KEY(fk_Kursasid_Kursas, fk_Kurso_ved_jasid_Kurso_ved_jas),
+    CONSTRAINT Yra_vedamas FOREIGN KEY(fk_Kursasid_Kursas) REFERENCES Kursai (id_Kursas)
+);
+
